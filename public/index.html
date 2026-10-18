@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>zot continuous Sandbox control</title>
+  </head>
+  <body>
+    <main>
+      <h1>zot continuous Sandbox control</h1>
+      <p>This deployment provides an authenticated control API at <code>/api</code>.</p>
+      <ul>
+        <li><code>GET /api</code>: inspect the sandbox.</li>
+        <li><code>POST /api</code>: start the host.</li>
+        <li><code>DELETE /api</code>: delete the sandbox with explicit workspace-loss confirmation.</li>
+      </ul>
+      <p>All API requests require the administrator bearer token. Do not paste secrets into this page.</p>
+      <p>Use the returned Sandbox WebSocket URL with your compatible zot client. See the repository README for setup, credentials, and lifecycle limitations.</p>
+    </main>
+  </body>
+</html>
