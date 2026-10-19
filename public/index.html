@@ -4,19 +4,70 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
-    <title>zot continuous Sandbox control</title>
+    <meta name="color-scheme" content="dark">
+    <title>zot continuous</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap">
+    <style>
+      :root {
+        --zot: oklch(0.8374 0.1129 222.74);
+        --background: oklch(0.145 0 0);
+        --foreground: oklch(0.985 0 0);
+        --card: oklch(0.205 0 0);
+        --muted: oklch(0.708 0 0);
+        --border: oklch(1 0 0 / 10%);
+      }
+      * { box-sizing: border-box; }
+      ::selection { background: var(--zot); color: var(--background); }
+      html, body { margin: 0; min-height: 100%; }
+      body {
+        background: var(--background);
+        color: var(--foreground);
+        font: 400 16px/1.6 "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        -webkit-font-smoothing: antialiased;
+      }
+      main { max-width: 720px; margin: 0 auto; padding: 96px 24px 64px; }
+      header { display: flex; align-items: center; gap: 16px; margin-bottom: 48px; }
+      header img { width: 40px; height: 40px; }
+      h1 { margin: 0; font-size: 20px; font-weight: 500; }
+      h1 span { color: var(--muted); }
+      .label { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin: 40px 0 12px; }
+      .label::before { content: ""; display: inline-block; width: 3px; height: 12px; border-radius: 9999px; background: var(--zot); }
+      p { margin: 0 0 16px; color: var(--muted); }
+      p strong { color: var(--foreground); font-weight: 500; }
+      code { color: var(--zot); }
+      ul { list-style: none; margin: 0; padding: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+      li { display: flex; gap: 16px; padding: 12px 16px; background: oklch(1 0 0 / 2%); }
+      li + li { border-top: 1px solid var(--border); }
+      li .method { width: 64px; flex: none; color: var(--zot); font-weight: 500; }
+      li .desc { color: var(--muted); }
+      footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+      a { color: var(--foreground); text-decoration: underline; text-decoration-color: var(--zot); text-underline-offset: 3px; }
+    </style>
   </head>
   <body>
     <main>
-      <h1>zot continuous Sandbox control</h1>
-      <p>This deployment provides an authenticated control API at <code>/api</code>.</p>
+      <header>
+        <img src="zot.svg" alt="zot">
+        <h1>zot continuous <span>/ sandbox control</span></h1>
+      </header>
+
+      <p>This deployment provides an <strong>authenticated control API</strong> at <code>/api</code>.</p>
+
+      <div class="label">endpoints</div>
       <ul>
-        <li><code>GET /api</code>: inspect the sandbox.</li>
-        <li><code>POST /api</code>: start the host.</li>
-        <li><code>DELETE /api</code>: delete the sandbox with explicit workspace-loss confirmation.</li>
+        <li><span class="method">GET</span><span class="desc">inspect the sandbox</span></li>
+        <li><span class="method">POST</span><span class="desc">start the host</span></li>
+        <li><span class="method">DELETE</span><span class="desc">delete the sandbox, requires explicit workspace-loss confirmation</span></li>
       </ul>
+
+      <div class="label">usage</div>
       <p>All API requests require the administrator bearer token. Do not paste secrets into this page.</p>
-      <p>Use the returned Sandbox WebSocket URL with your compatible zot client. See the repository README for setup, credentials, and lifecycle limitations.</p>
+      <p>Connect the returned Sandbox WebSocket URL with a compatible zot client such as <a href="https://web.zot.sh">web.zot.sh</a>.</p>
+
+      <footer><a href="https://zot.sh">zot.sh</a></footer>
     </main>
   </body>
 </html>
