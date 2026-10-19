@@ -158,3 +158,7 @@ Tests run locally only. They do not create sandboxes or call any paid service.
 - [zot](https://zot.sh)
 - [zot continuous documentation](https://github.com/patriceckhart/zot/blob/main/docs/continuous.md)
 - [Vercel Sandbox](https://vercel.com/docs/sandbox)
+
+## License
+
+MIT
