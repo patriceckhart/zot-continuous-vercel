@@ -96,6 +96,8 @@ The value is the `oauth` object from your local zot `auth.json` for that provide
 
 **Note:** zot renews these tokens while running, but renewed tokens are lost when the sandbox stops. If the next start fails to log in, log in again locally and update the variable.
 
+> **Note on subscription login.** The OAuth client IDs used are the ones published in Anthropic's Claude Code CLI, OpenAI's Codex CLI, Kimi Code CLI, xAI's device flow, and GitHub Copilot's device-code flow. Reusing them from a third-party tool may be against their terms of service and may be revoked at any time. Use it at your own risk; the API-key flow is the safe default.
+
 ### Work on a GitHub repository
 
 ```dotenv
