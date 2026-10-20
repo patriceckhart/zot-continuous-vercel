@@ -120,7 +120,7 @@ GIT_ALLOW_PUSH=true
 | `ZOT_STORE_NAME` | `main` | Name of the conversation store in the database |
 | `ZOT_SANDBOX_NAME` | `zot-continuous` | Name of the sandbox in Vercel |
 | `ZOT_SANDBOX_TIMEOUT_SECONDS` | `1800` | Runtime before automatic stop, 60 to 18000, subject to your Vercel plan |
-| `ZOT_VERSION` / `ZOT_ARCHIVE_SHA256` | `0.4.35` | Use another zot release. Set both together. |
+| `ZOT_VERSION` / `ZOT_ARCHIVE_SHA256` | pinned in `src/config.ts` | Use another zot release. Set both together. |
 | `ALLOW_PREVIEW_CONTROL` | `false` | Allow preview deployments to control the sandbox |
 
 See `.env.example` for a complete template.

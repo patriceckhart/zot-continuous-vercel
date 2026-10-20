@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { controlToken, parseOAuth, runtimeConfig, sandboxName, timeout } from '../src/config.js'
+import { DEFAULT_ZOT_VERSION, controlToken, parseOAuth, runtimeConfig, sandboxName, timeout } from '../src/config.js'
 import { credentials, verifyArchive, zotArgs } from '../sandbox/runner.mjs'
 import { createHash } from 'node:crypto'
 
@@ -19,7 +19,7 @@ describe('configuration', () => {
   test('uses read-only tools, pinned artifact, and no implicit durability override', () => {
     const config = runtimeConfig(valid())
     expect(config.tools).toBe('read,glob')
-    expect(config.version).toBe('0.4.35')
+    expect(config.version).toBe(DEFAULT_ZOT_VERSION)
     expect(config.sha256).toHaveLength(64)
     expect(config.trustRemoteDurability).toBe(false)
     expect(config.allowGitPush).toBe(false)
@@ -44,7 +44,7 @@ describe('configuration', () => {
     ['GIT_ALLOW_PUSH', 'true'],
     ['ZOT_POSTGRES_TRUST_REMOTE_DURABILITY', 'yes'],
     ['ZOT_VERSION', 'latest'],
-    ['ZOT_VERSION', '0.4.36'],
+    ['ZOT_VERSION', '0.0.1'],
     ['ZOT_TOOLS', 'read bash'],
   ])('rejects invalid %s safely', (name, value) => {
     expect(() => runtimeConfig({ ...valid(), [name]: value })).toThrow()
@@ -99,8 +99,8 @@ describe('configuration', () => {
   })
 
   test('pins upgrades and retains Git credentials only when configured', () => {
-    const config = runtimeConfig({ ...valid(), ZOT_VERSION: '0.4.36', ZOT_ARCHIVE_SHA256: 'a'.repeat(64), GIT_REPOSITORY: 'owner/repo', GITHUB_TOKEN: 'synthetic-git', GIT_ALLOW_PUSH: 'true' })
-    expect(config.version).toBe('0.4.36')
+    const config = runtimeConfig({ ...valid(), ZOT_VERSION: '0.0.1', ZOT_ARCHIVE_SHA256: 'a'.repeat(64), GIT_REPOSITORY: 'owner/repo', GITHUB_TOKEN: 'synthetic-git', GIT_ALLOW_PUSH: 'true' })
+    expect(config.version).toBe('0.0.1')
     expect(config.allowGitPush).toBe(true)
     expect(config.gitToken).toBe('synthetic-git')
   })

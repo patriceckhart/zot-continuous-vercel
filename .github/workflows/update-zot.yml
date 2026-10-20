@@ -1,0 +1,75 @@
+name: Update zot
+
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-zot
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PIN_FILE: src/config.ts
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve latest release
+        id: release
+        run: |
+          set -euo pipefail
+          tag=$(gh api repos/patriceckhart/zot/releases/latest --jq .tag_name)
+          version=${tag#v}
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Unexpected tag: $tag"; exit 1; }
+          archive="zot_${version}_linux_amd64.tar.gz"
+          base="https://github.com/patriceckhart/zot/releases/download/${tag}"
+          sha=$(curl -fsSL "$base/checksums.txt" | awk -v f="$archive" '$2 == f { print $1 }')
+          [[ "$sha" =~ ^[a-f0-9]{64}$ ]] || { echo "No checksum for $archive"; exit 1; }
+          curl -fsSL -o "$RUNNER_TEMP/$archive" "$base/$archive"
+          echo "$sha  $RUNNER_TEMP/$archive" | sha256sum -c -
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: Update pin
+        id: pin
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+          SHA: ${{ steps.release.outputs.sha }}
+        run: |
+          set -euo pipefail
+          sed -i -E \
+            -e "s/^(export const DEFAULT_ZOT_VERSION = ')[^']*'/\1${VERSION}'/" \
+            -e "s/^(export const DEFAULT_ZOT_SHA256 = ')[^']*'/\1${SHA}'/" \
+            "$PIN_FILE"
+          grep -q "DEFAULT_ZOT_VERSION = '${VERSION}'" "$PIN_FILE"
+          grep -q "DEFAULT_ZOT_SHA256 = '${SHA}'" "$PIN_FILE"
+          if git diff --quiet; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Open pull request
+        if: steps.pin.outputs.changed == 'true'
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          branch="update-zot/${VERSION}"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then
+            echo "Branch $branch already exists"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -c "$branch"
+          git add "$PIN_FILE"
+          git commit -m "Update zot to ${VERSION}"
+          git push origin "$branch"
+          gh pr create --base "${{ github.event.repository.default_branch }}" --head "$branch" \
+            --title "Update zot to ${VERSION}" \
+            --body "Pins zot ${VERSION} (Linux amd64). The SHA-256 is taken from the release checksums.txt and was verified against the downloaded archive. Redeploy after merging."

@@ -1,5 +1,9 @@
 export class ConfigError extends Error {}
 
+// Default zot release, Linux amd64 archive. Updated by .github/workflows/update-zot.yml.
+export const DEFAULT_ZOT_VERSION = '0.4.35'
+export const DEFAULT_ZOT_SHA256 = '9367034a10fe3c7d3aa091ccdd05fb1b1c76721f5124490c5f8bbae1ab158113'
+
 type Env = Record<string, string | undefined>
 
 export interface OAuthToken {
@@ -122,9 +126,9 @@ export function runtimeConfig(env: Env): RuntimeConfig {
   const apiKey = provider === 'anthropic' ? env.ANTHROPIC_API_KEY : provider === 'openai' ? env.OPENAI_API_KEY : undefined
   if (oauth && apiKey) throw new ConfigError('Configure either a subscription token or an API key for the selected provider, not both')
   if (!oauth && !apiKey) throw new ConfigError(provider === 'openai-codex' ? 'CODEX_OAUTH_JSON is required' : `Credentials for ${provider} are required`)
-  const version = env.ZOT_VERSION || '0.4.35'
+  const version = env.ZOT_VERSION || DEFAULT_ZOT_VERSION
   if (!/^\d+\.\d+\.\d+$/.test(version)) throw new ConfigError('ZOT_VERSION must be a release version without v')
-  const sha256 = env.ZOT_ARCHIVE_SHA256 || (version === '0.4.35' ? '9367034a10fe3c7d3aa091ccdd05fb1b1c76721f5124490c5f8bbae1ab158113' : '')
+  const sha256 = env.ZOT_ARCHIVE_SHA256 || (version === DEFAULT_ZOT_VERSION ? DEFAULT_ZOT_SHA256 : '')
   if (!/^[a-f0-9]{64}$/.test(sha256)) throw new ConfigError('ZOT_ARCHIVE_SHA256 must pin the Linux amd64 release archive')
   return {
     version, sha256, dsn, storeName, hostToken, webOrigin: origin,
