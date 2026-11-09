@@ -1,8 +1,8 @@
 export class ConfigError extends Error {}
 
 // Default zot release, Linux amd64 archive. Updated by .github/workflows/update-zot.yml.
-export const DEFAULT_ZOT_VERSION = '0.4.35'
-export const DEFAULT_ZOT_SHA256 = '9367034a10fe3c7d3aa091ccdd05fb1b1c76721f5124490c5f8bbae1ab158113'
+export const DEFAULT_ZOT_VERSION = '0.4.69'
+export const DEFAULT_ZOT_SHA256 = 'b6b3ff93d42b49b6473ab8b0addddf7d6632176cefe5ae3b3ea8f6805aa268a9'
 
 type Env = Record<string, string | undefined>
 
